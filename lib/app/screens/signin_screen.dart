@@ -1,0 +1,169 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/signin_controller.dart';
+
+class SignInScreen extends StatelessWidget {
+  final SignInController controller = Get.put(SignInController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Container(
+          width: double.infinity,
+          height: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Color(0xFFEAF6FF), Color(0xFFB6E0FE)],
+            ),
+          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(height: 24),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.arrow_back_ios_new,
+                        color: Colors.grey[700],
+                      ),
+                      onPressed: () => Get.back(),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    height: 80,
+                    width: 80,
+                    decoration: BoxDecoration(
+                      color: Colors.blue[900],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Center(
+                      child: Text(
+                        'IC',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 32,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Inochat',
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blue[900],
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  Text(
+                    'Welcome To Inochat!',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.blue[900],
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.blue[100]!, width: 2),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 12, top: 8),
+                          child: Text(
+                            'Mobile Number',
+                            style: TextStyle(
+                              color: Colors.grey[700],
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                        TextField(
+                          controller: controller.mobileController,
+                          keyboardType: TextInputType.phone,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 8,
+                            ),
+                            hintText: '9876543210',
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () => controller.signIn(context),
+                      child: controller.isLoading.value
+                          ? SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              'Sign in',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[700],
+                        minimumSize: Size(double.infinity, 48),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Do't have an account? ",
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      GestureDetector(
+                        onTap: () => controller.goToSignUp(),
+                        child: Text(
+                          'Sign Up',
+                          style: TextStyle(
+                            color: Colors.blue[700],
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 24),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

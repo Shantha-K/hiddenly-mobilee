@@ -1,6 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/verify_controller.dart';
 
-class VerifyScreen extends StatelessWidget {
+class VerifyScreen extends StatefulWidget {
+  @override
+  State<VerifyScreen> createState() => _VerifyScreenState();
+}
+
+class _VerifyScreenState extends State<VerifyScreen> {
+  final VerifyController controller = Get.put(VerifyController());
+
+  @override
+  void initState() {
+    super.initState();
+    // Always clear OTP fields for manual entry
+    for (var c in controller.otpControllers) {
+      c.clear();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,7 +95,17 @@ class VerifyScreen extends StatelessWidget {
                         ],
                       ),
                       child: Center(
-                        child: Text('0', style: TextStyle(fontSize: 24)),
+                        child: TextField(
+                          controller: controller.otpControllers[index],
+                          keyboardType: TextInputType.number,
+                          textAlign: TextAlign.center,
+                          maxLength: 1,
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            counterText: '',
+                          ),
+                          style: TextStyle(fontSize: 24),
+                        ),
                       ),
                     ),
                   ),
@@ -85,15 +113,34 @@ class VerifyScreen extends StatelessWidget {
                 SizedBox(height: 24),
                 SizedBox(
                   width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text('Continue'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[400],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                  child: Obx(
+                    () => ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () async {
+                              await controller.verifyOtp();
+                              if (!controller.isLoading.value &&
+                                  controller.lastVerifySuccess) {
+                                Get.snackbar(
+                                  'Success',
+                                  'OTP verified successfully',
+                                );
+                                await Future.delayed(
+                                  Duration(milliseconds: 800),
+                                );
+                                Get.offAllNamed('/fingerprint');
+                              }
+                            },
+                      child: controller.isLoading.value
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text('Continue'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue[400],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14),
                       ),
-                      padding: EdgeInsets.symmetric(vertical: 14),
                     ),
                   ),
                 ),
@@ -103,7 +150,9 @@ class VerifyScreen extends StatelessWidget {
                   children: [
                     Text("Didn't receive the code? "),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        await controller.resendOtp();
+                      },
                       child: Text(
                         'Resend Code',
                         style: TextStyle(

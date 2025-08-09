@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/signup_controller.dart';
 
 class SignupScreen extends StatelessWidget {
+  final SignupController controller = Get.put(SignupController());
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,6 +47,7 @@ class SignupScreen extends StatelessWidget {
             ),
             SizedBox(height: 24),
             TextField(
+              controller: controller.nameController,
               decoration: InputDecoration(
                 hintText: 'Name',
                 filled: true,
@@ -52,6 +57,7 @@ class SignupScreen extends StatelessWidget {
             ),
             SizedBox(height: 16),
             TextField(
+              controller: controller.mobileController,
               decoration: InputDecoration(
                 hintText: 'Mobile Number',
                 filled: true,
@@ -61,17 +67,25 @@ class SignupScreen extends StatelessWidget {
               keyboardType: TextInputType.phone,
             ),
             SizedBox(height: 24),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Sign up'),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 48),
-                backgroundColor: Colors.blue[400],
+            Obx(
+              () => ElevatedButton(
+                onPressed: controller.isLoading.value
+                    ? null
+                    : controller.signUp,
+                child: controller.isLoading.value
+                    ? CircularProgressIndicator(color: Colors.white)
+                    : Text('Sign up'),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 48),
+                  backgroundColor: Colors.blue[400],
+                ),
               ),
             ),
             SizedBox(height: 16),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.toNamed('/signin');
+              },
               child: Text('Already have an account? Sign in'),
             ),
           ],

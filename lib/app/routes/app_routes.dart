@@ -13,9 +13,11 @@ import '../screens/fingerprint_screen.dart';
 import '../screens/qrcode_screen.dart';
 import '../screens/account_created_screen.dart';
 import '../screens/chat_screen.dart';
+import '../screens/signin_screen.dart';
 
 class AppRoutes {
   static const SPLASH = '/splash';
+  static const SIGNIN = '/signin';
   static const SIGNUP = '/signup';
   static const VERIFY = '/verify';
   static const FINGERPRINT = '/fingerprint';
@@ -25,6 +27,7 @@ class AppRoutes {
 
   static final routes = [
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: SplashBinding()),
+    GetPage(name: SIGNIN, page: () => SignInScreen()),
     GetPage(name: SIGNUP, page: () => SignupScreen(), binding: SignupBinding()),
     GetPage(name: VERIFY, page: () => VerifyScreen(), binding: VerifyBinding()),
     GetPage(
