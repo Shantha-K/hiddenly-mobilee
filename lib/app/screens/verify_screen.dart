@@ -13,7 +13,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
   @override
   void initState() {
     super.initState();
-    // Always clear OTP fields for manual entry
     for (var c in controller.otpControllers) {
       c.clear();
     }
@@ -121,14 +120,16 @@ class _VerifyScreenState extends State<VerifyScreen> {
                               await controller.verifyOtp();
                               if (!controller.isLoading.value &&
                                   controller.lastVerifySuccess) {
-                                Get.snackbar(
-                                  'Success',
-                                  'OTP verified successfully',
-                                );
                                 await Future.delayed(
                                   Duration(milliseconds: 800),
                                 );
-                                Get.offAllNamed('/fingerprint');
+
+                                // Navigate based on new/existing user
+                                if (controller.isNewUser) {
+                                  Get.offAllNamed('/fingerprint');
+                                } else {
+                                  Get.offAllNamed('/home');
+                                }
                               }
                             },
                       child: controller.isLoading.value

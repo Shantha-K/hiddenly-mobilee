@@ -93,10 +93,13 @@ class AccountCreatedScreen extends StatelessWidget {
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () => Get.offAllNamed('/chat'),
+                          onPressed: () => Get.offAllNamed('/home'),
                           child: Text(
                             'Continue',
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue[900],
