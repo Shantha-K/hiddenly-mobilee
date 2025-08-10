@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../routes/app_routes.dart';
 import 'package:flutter/material.dart';
 
 class VerifyController extends GetxController {
@@ -12,7 +11,29 @@ class VerifyController extends GetxController {
   var deviceId = ''.obs;
   var userId = ''.obs;
   var name = ''.obs;
+  var isNewUser = false; // Flag to decide navigation
   bool lastVerifySuccess = false;
+
+  @override
+  void onInit() {
+    super.onInit();
+    final args = Get.arguments;
+    if (args != null) {
+      otp.value = args['otp']?.toString() ?? '';
+      mobile.value = args['mobile']?.toString() ?? '';
+      deviceId.value = args['deviceId']?.toString() ?? '';
+      userId.value = args['userId']?.toString() ?? '';
+      name.value = args['name']?.toString() ?? '';
+      isNewUser = args['isNewUser'] ?? false;
+    }
+
+    // Always clear OTP fields for manual entry
+    for (var c in otpControllers) {
+      c.clear();
+    }
+  }
+
+  String get enteredOtp => otpControllers.map((c) => c.text).join();
 
   Future<void> resendOtp() async {
     try {
@@ -41,35 +62,17 @@ class VerifyController extends GetxController {
     }
   }
 
-  @override
-  void onInit() {
-    super.onInit();
-    final args = Get.arguments;
-    if (args != null) {
-      // Only store OTP for reference, do not auto-fill fields
-      otp.value = args['otp']?.toString() ?? '';
-      mobile.value = args['mobile']?.toString() ?? '';
-      deviceId.value = args['deviceId']?.toString() ?? '';
-      userId.value = args['userId']?.toString() ?? '';
-      name.value = args['name']?.toString() ?? '';
-    }
-    // Always clear OTP fields for manual entry
-    for (var c in otpControllers) {
-      c.clear();
-    }
-  }
-
-  String get enteredOtp => otpControllers.map((c) => c.text).join();
-
   Future<void> verifyOtp() async {
     isLoading.value = true;
     lastVerifySuccess = false;
-    // Show alert dialog for a few seconds
+
+    // Show alert dialog while verifying
     Get.defaultDialog(
       title: 'Verifying OTP',
       middleText: 'Please wait...',
       barrierDismissible: false,
     );
+
     await Future.delayed(Duration(seconds: 10));
     Get.back(); // Close the dialog
 
@@ -83,6 +86,7 @@ class VerifyController extends GetxController {
 
     http.StreamedResponse response = await request.send();
     isLoading.value = false;
+
     if (response.statusCode == 200) {
       var data = json.decode(await response.stream.bytesToString());
       if (data["message"] == "Sign in successful") {
