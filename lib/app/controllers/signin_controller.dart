@@ -37,10 +37,15 @@ class SignInController extends GetxController {
         if (data['message'] == "OTP sent for login" && data['userId'] != null) {
           userId = data['userId'];
           serverOtp = data['otp']?.toString();
-          // Navigate to verify screen and pass mobile, userId, and otp if needed
+
           Get.toNamed(
             '/verify',
-            arguments: {'mobile': mobile, 'userId': userId, 'otp': serverOtp},
+            arguments: {
+              'mobile': mobile,
+              'userId': userId,
+              'otp': serverOtp,
+              'isNewUser': false, // <- Existing user
+            },
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -58,23 +63,6 @@ class SignInController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  void verifyOtp(BuildContext context) {
-    final enteredOtp = otpController.text.trim();
-    if (enteredOtp.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please enter the OTP.')));
-      return;
-    }
-    if (enteredOtp == serverOtp) {
-      Get.offAllNamed('/home');
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Invalid OTP. Please try again.')));
     }
   }
 

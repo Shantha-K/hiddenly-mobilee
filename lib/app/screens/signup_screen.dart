@@ -5,6 +5,11 @@ import '../controllers/signup_controller.dart';
 class SignupScreen extends StatelessWidget {
   final SignupController controller = Get.put(SignupController());
 
+  bool isValidMobile(String mobile) {
+    final regex = RegExp(r'^[6-9]\d{9}$'); // Starts with 6-9, total 10 digits
+    return regex.hasMatch(mobile);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,7 +47,7 @@ class SignupScreen extends StatelessWidget {
             ),
             SizedBox(height: 8),
             Text(
-              'Welcome To Hiddenly!',
+              'Welcome To Inochat!',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 24),
@@ -71,10 +76,22 @@ class SignupScreen extends StatelessWidget {
               () => ElevatedButton(
                 onPressed: controller.isLoading.value
                     ? null
-                    : controller.signUp,
+                    : () {
+                        String mobile = controller.mobileController.text.trim();
+                        if (!isValidMobile(mobile)) {
+                          Get.snackbar(
+                            'Invalid Mobile Number',
+                            'Please enter a valid 10-digit mobile number',
+                            backgroundColor: Colors.grey,
+                            colorText: Colors.white,
+                          );
+                          return;
+                        }
+                        controller.signUp();
+                      },
                 child: controller.isLoading.value
                     ? CircularProgressIndicator(color: Colors.white)
-                    : Text('Sign up'),
+                    : Text('Sign up', style: TextStyle(color: Colors.white)),
                 style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 48),
                   backgroundColor: Colors.blue[400],
@@ -86,7 +103,25 @@ class SignupScreen extends StatelessWidget {
               onPressed: () {
                 Get.toNamed('/signin');
               },
-              child: Text('Already have an account? Sign in'),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: 'Already have an account? ',
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ), // Grey color for first part
+                    ),
+                    TextSpan(
+                      text: 'Sign in',
+                      style: TextStyle(
+                        color: Colors.blue, // Change to your desired color
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),

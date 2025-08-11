@@ -104,6 +104,15 @@ class _VerifyScreenState extends State<VerifyScreen> {
                             counterText: '',
                           ),
                           style: TextStyle(fontSize: 24),
+                          // ✅ Auto focus move only, no auto-submit
+                          onChanged: (value) {
+                            if (value.isNotEmpty && index < 3) {
+                              FocusScope.of(context).nextFocus();
+                            }
+                            if (value.isEmpty && index > 0) {
+                              FocusScope.of(context).previousFocus();
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -123,8 +132,6 @@ class _VerifyScreenState extends State<VerifyScreen> {
                                 await Future.delayed(
                                   Duration(milliseconds: 800),
                                 );
-
-                                // Navigate based on new/existing user
                                 if (controller.isNewUser) {
                                   Get.offAllNamed('/fingerprint');
                                 } else {
