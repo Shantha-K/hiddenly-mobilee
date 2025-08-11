@@ -32,7 +32,9 @@ class SignupController extends GetxController {
         // Store userId in local storage
         final prefs = await SharedPreferences.getInstance();
         await prefs.setString('userId', data["userId"] ?? '');
+
         Get.snackbar('Success', 'OTP sent successfully: ${data["otp"]}');
+
         Get.toNamed(
           AppRoutes.VERIFY,
           arguments: {
@@ -41,6 +43,7 @@ class SignupController extends GetxController {
             "userId": data["userId"],
             "name": data["name"],
             "mobile": mobileController.text,
+            "isNewUser": true, // <- New user flag
           },
         );
       } else {
