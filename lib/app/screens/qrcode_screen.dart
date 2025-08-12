@@ -6,6 +6,8 @@ import '../controllers/qrcode_controller.dart';
 class QRCodeScreen extends StatelessWidget {
   final QRCodeController controller = Get.put(QRCodeController());
 
+  QRCodeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,6 +78,10 @@ class QRCodeScreen extends StatelessWidget {
                   onPressed: controller.isLoading.value
                       ? null
                       : () => controller.generateAndSaveQr(context),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 48),
+                    backgroundColor: Colors.blue[400],
+                  ),
                   child: controller.isLoading.value
                       ? SizedBox(
                           width: 24,
@@ -86,10 +92,6 @@ class QRCodeScreen extends StatelessWidget {
                           ),
                         )
                       : Text('Submit'),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 48),
-                    backgroundColor: Colors.blue[400],
-                  ),
                 ),
                 if (controller.qrBase64.value != null) ...[
                   SizedBox(height: 32),

@@ -1,3 +1,5 @@
+// ignore_for_file: constant_identifier_names
+
 import 'package:inochat/app/bindings/home_binding.dart';
 import 'package:inochat/app/screens/contacts/chat_detail_screen.dart';
 import 'package:inochat/app/screens/home_screen.dart';
@@ -53,7 +55,7 @@ class AppRoutes {
       binding: ContactsBinding(),
     ),
     GetPage(name: SIGNUP, page: () => SignupScreen(), binding: SignupBinding()),
-    GetPage(name: VERIFY, page: () => VerifyScreen(), binding: VerifyBinding()),
+    GetPage(name: VERIFY, page: () =>VerifyScreen(), binding: VerifyBinding()),
     GetPage(
       name: FINGERPRINT,
       page: () => FingerprintScreen(),

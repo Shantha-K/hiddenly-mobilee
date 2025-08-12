@@ -125,7 +125,7 @@ class ContactsController extends GetxController {
     if (phone.length >= 10) phone = phone.substring(phone.length - 10);
 
     String message =
-        "Hey ${contact.displayName ?? ''}, join me on Inochat! https://inochat.example.com";
+        "Hey ${contact.displayName}, join me on Inochat! https://inochat.example.com";
 
     final whatsapp = Uri.parse(
       "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",

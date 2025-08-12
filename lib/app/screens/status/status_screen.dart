@@ -5,6 +5,8 @@ import '../../controllers/status_controller.dart';
 class StatusScreen extends StatelessWidget {
   final StatusController controller = Get.put(StatusController());
 
+  StatusScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
