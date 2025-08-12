@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AccountCreatedScreen extends StatelessWidget {
+  const AccountCreatedScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,18 +96,18 @@ class AccountCreatedScreen extends StatelessWidget {
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () => Get.offAllNamed('/home'),
-                          child: Text(
-                            'Continue',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
-                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue[900],
                             minimumSize: Size(double.infinity, 48),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                         ),

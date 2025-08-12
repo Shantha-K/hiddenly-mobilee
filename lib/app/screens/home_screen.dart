@@ -4,6 +4,8 @@ import 'chat/chat_screen.dart';
 import 'status/status_screen.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -150,8 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
             _selectedIndex = index;
           });
         },
-        children: _screens,
         physics: const BouncingScrollPhysics(),
+        children: _screens,
       ),
     );
   }

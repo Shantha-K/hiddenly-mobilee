@@ -61,13 +61,13 @@ class QRCodeController extends GetxController {
 
   Future<bool> uploadQrToGoogleDrive(BuildContext context) async {
     try {
-      final GoogleSignIn _googleSignIn = GoogleSignIn(
+      final GoogleSignIn googleSignIn = GoogleSignIn(
         clientId:
             "362120589511-nlbum7u5tucsivuf37153vh0bp47hivq.apps.googleusercontent.com",
         scopes: [drive.DriveApi.driveFileScope],
       );
 
-      final account = await _googleSignIn.signIn();
+      final account = await googleSignIn.signIn();
       if (account == null) {
         ScaffoldMessenger.of(
           context,

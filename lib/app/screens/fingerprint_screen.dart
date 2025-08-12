@@ -1,8 +1,12 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:local_auth/local_auth.dart';
 
 class FingerprintScreen extends StatefulWidget {
+  const FingerprintScreen({super.key});
+
   @override
   State<FingerprintScreen> createState() => _FingerprintScreenState();
 }

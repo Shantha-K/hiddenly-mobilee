@@ -5,6 +5,8 @@ import '../../controllers/chat_controller.dart';
 class ChatScreen extends StatelessWidget {
   final ChatController controller = Get.put(ChatController());
 
+  ChatScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

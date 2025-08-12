@@ -5,6 +5,8 @@ import '../../controllers/contacts_controller.dart';
 class ContactsScreen extends StatelessWidget {
   final ContactsController controller = Get.put(ContactsController());
 
+  ContactsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,7 +78,7 @@ class ContactsScreen extends StatelessWidget {
                     vertical: 4,
                   ),
                 );
-              }).toList(),
+              }),
             ],
             if (controller.unregisteredContacts.isNotEmpty) ...[
               Padding(
@@ -144,7 +146,7 @@ class ContactsScreen extends StatelessWidget {
                     vertical: 4,
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ],
         );

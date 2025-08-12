@@ -1,7 +1,11 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import '../controllers/signin_controller.dart';
 
+// ignore: use_key_in_widget_constructors
 class SignInScreen extends StatelessWidget {
   final SignInController controller = Get.put(SignInController());
 
@@ -74,41 +78,78 @@ class SignInScreen extends StatelessWidget {
                     ),
                   ),
                   SizedBox(height: 24),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: Colors.blue[100]!, width: 2),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 12, top: 8),
-                          child: Text(
-                            'Mobile Number',
-                            style: TextStyle(
-                              color: Colors.grey[700],
-                              fontSize: 14,
-                            ),
-                          ),
-                        ),
-                        TextField(
-                          controller: controller.mobileController,
-                          keyboardType: TextInputType.phone,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            contentPadding: EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 8,
-                            ),
-                            hintText: 'enter your mobile number',
-                          ),
-                        ),
-                      ],
+                  // Container(
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white.withOpacity(0.7),
+                  //     borderRadius: BorderRadius.circular(8),
+                  //     border: Border.all(color: Colors.blue[100]!, width: 2),
+                  //   ),
+                  //   child: Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.start,
+                  //     children: [
+                  //       Padding(
+                  //         padding: const EdgeInsets.only(left: 12, top: 8),
+                  //         child: Text(
+                  //           textAlign: TextAlign.center,
+                  //           'Mobile Number',
+                  //           style: TextStyle(
+                  //             color: Colors.grey[700],
+                  //             fontSize: 14,
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       TextField(
+                  //         controller: controller.mobileController,
+                  //         keyboardType: TextInputType.phone,
+                  //         decoration: InputDecoration(
+                  //           border: InputBorder.none,
+                  //           contentPadding: EdgeInsets.symmetric(
+                  //             horizontal: 12,
+                  //             vertical: 8,
+                  //           ),
+                  //           hintText: 'enter your mobile number',
+                  //         ),
+                  //       ),
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: const Text(
+                      'Mobile Number',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                  SizedBox(height: 32),
+                  const SizedBox(height: 6),
+                  TextField(
+                    controller: controller.mobileController,
+                    keyboardType: TextInputType.phone,
+                    onChanged: (val) => controller.mobile.value = val,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(10),
+                    ],
+                    decoration: InputDecoration(
+                      hintText: '7759125826',
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 14,
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                          color: Colors.white,
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(color: Colors.white),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
                   SizedBox(
                     width: double.infinity,
                     child: Obx(
@@ -116,6 +157,13 @@ class SignInScreen extends StatelessWidget {
                         onPressed: controller.isLoading.value
                             ? null
                             : () => controller.signIn(context),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue[700],
+                          minimumSize: Size(double.infinity, 48),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                         child: controller.isLoading.value
                             ? SizedBox(
                                 width: 24,
@@ -132,13 +180,6 @@ class SignInScreen extends StatelessWidget {
                                   color: Colors.white,
                                 ),
                               ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue[700],
-                          minimumSize: Size(double.infinity, 48),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
                       ),
                     ),
                   ),

@@ -8,6 +8,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 class SignupController extends GetxController {
   final nameController = TextEditingController();
   final mobileController = TextEditingController();
+  final name = ''.obs;
+  final mobile = ''.obs;
   var isLoading = false.obs;
 
   Future<void> signUp() async {

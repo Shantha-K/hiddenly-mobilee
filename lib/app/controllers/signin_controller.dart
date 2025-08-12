@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInController extends GetxController {
   final mobileController = TextEditingController();
@@ -9,6 +10,8 @@ class SignInController extends GetxController {
   var isLoading = false.obs;
   String? userId;
   String? serverOtp;
+
+  var mobile;
 
   void signIn(BuildContext context) async {
     final mobile = mobileController.text.trim();
@@ -29,29 +32,43 @@ class SignInController extends GetxController {
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-
       if (response.statusCode == 200) {
-        final respStr = await response.stream.bytesToString();
-        final data = json.decode(respStr);
+        final data = json.decode(await response.stream.bytesToString());
 
-        if (data['message'] == "OTP sent for login" && data['userId'] != null) {
-          userId = data['userId'];
-          serverOtp = data['otp']?.toString();
-          // Navigate to verify screen and pass mobile, userId, and otp if needed
-          Get.toNamed(
-            '/verify',
-            arguments: {'mobile': mobile, 'userId': userId, 'otp': serverOtp},
-          );
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Sign in failed. Please try again.')),
-          );
-        }
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userId', data['userId'] ?? ' ');
+        Get.snackbar('sucess', 'OTP sent successfully: ${data['otp']}');
+
+        Get.toNamed(
+          '/verify',
+          arguments: {
+            'mobile': mobile,
+            'userId': data['userId'],
+            'otp': data['otp'],
+          },
+        );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sign in failed. Please try again.')),
         );
       }
+      // if (response.statusCode == 200) {
+      //   final respStr = await response.stream.bytesToString();
+      //   final data = json.decode(respStr);
+
+      //   if (data['message'] == "OTP sent for login" && data['userId'] != null) {
+      //     userId = data['userId'];
+      //     serverOtp = data['otp']?.toString();
+      //     // Navigate to verify screen and pass mobile, userId, and otp if needed
+      //     Get.toNamed(
+      //       '/verify',
+      //       arguments: {'mobile': mobile, 'userId': userId, 'otp': serverOtp},
+      //     );
+      //   } else {
+      //     ScaffoldMessenger.of(context).showSnackBar(
+      //       SnackBar(content: Text('Sign in failed. Please try again.')),
+      //     );
+      //   }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('An error occurred. Please try again.')),
