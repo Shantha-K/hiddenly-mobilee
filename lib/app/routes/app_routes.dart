@@ -1,6 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:inochat/app/bindings/home_binding.dart';
+import 'package:inochat/app/screens/contacts/chat_detail_screen.dart';
 import 'package:inochat/app/screens/home_screen.dart';
 
 import '../screens/status/status_screen.dart';
@@ -36,12 +37,18 @@ class AppRoutes {
   static const ACCOUNT_CREATED = '/account_created';
   static const CHAT = '/chat';
   static const HOME = '/home';
+  static const CHATDETAIL = '/chat_detail';
 
   static final routes = [
     GetPage(name: STATUS, page: () => StatusScreen(), binding: StatusBinding()),
     GetPage(name: SPLASH, page: () => SplashScreen(), binding: SplashBinding()),
     GetPage(name: SIGNIN, page: () => SignInScreen()),
     GetPage(name: HOME, page: () => HomeScreen(), binding: HomeBinding()),
+    GetPage(
+      name: CHATDETAIL,
+      page: () => ChatDetailScreen(),
+      binding: ChatBinding(),
+    ),
     GetPage(
       name: CONTACTS,
       page: () => ContactsScreen(),

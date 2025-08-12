@@ -35,18 +35,24 @@ class SignInController extends GetxController {
       if (response.statusCode == 200) {
         final data = json.decode(await response.stream.bytesToString());
 
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('userId', data['userId'] ?? ' ');
-        Get.snackbar('sucess', 'OTP sent successfully: ${data['otp']}');
+        if (data['message'] == "OTP sent for login" && data['userId'] != null) {
+          userId = data['userId'];
+          serverOtp = data['otp']?.toString();
 
-        Get.toNamed(
-          '/verify',
-          arguments: {
-            'mobile': mobile,
-            'userId': data['userId'],
-            'otp': data['otp'],
-          },
-        );
+          Get.toNamed(
+            '/verify',
+            arguments: {
+              'mobile': mobile,
+              'userId': userId,
+              'otp': serverOtp,
+              'isNewUser': false, // <- Existing user
+            },
+          );
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Sign in failed. Please try again.')),
+          );
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Sign in failed. Please try again.')),
@@ -75,23 +81,6 @@ class SignInController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-    }
-  }
-
-  void verifyOtp(BuildContext context) {
-    final enteredOtp = otpController.text.trim();
-    if (enteredOtp.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Please enter the OTP.')));
-      return;
-    }
-    if (enteredOtp == serverOtp) {
-      Get.offAllNamed('/home');
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Invalid OTP. Please try again.')));
     }
   }
 

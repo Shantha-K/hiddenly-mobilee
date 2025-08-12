@@ -1,3 +1,4 @@
+// lib/app/controllers/contacts/contacts_controller.dart
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
@@ -12,27 +13,39 @@ class ContactsController extends GetxController {
 
   final String apiUrl = "http://35.154.10.237:5000/api/contacts/check-exist";
 
+  // If you want to change token or header later, update here
+  final Map<String, String> defaultHeaders = {
+    'Content-Type': 'application/json',
+  };
+
   @override
   void onInit() {
     super.onInit();
     fetchAndValidateContacts();
   }
 
+  /// Public alias used by UI RefreshIndicator
+  Future<void> loadContacts() async {
+    await fetchAndValidateContacts();
+  }
+
+  /// Fetch phone contacts, normalize last-10-digits, call server
   Future<void> fetchAndValidateContacts() async {
     try {
       isLoading.value = true;
 
       // Request permission
-      if (!await FlutterContacts.requestPermission()) {
+      final granted = await FlutterContacts.requestPermission();
+      if (!granted) {
         registeredContacts.clear();
         unregisteredContacts.clear();
         return;
       }
 
-      // Get all contacts with phone numbers
+      // Get contacts (with phone numbers & photo)
       List<Contact> contacts = await FlutterContacts.getContacts(
         withProperties: true,
-        withPhoto: false,
+        withPhoto: true,
       );
 
       // Collect unique, normalized last-10-digit numbers
@@ -55,7 +68,7 @@ class ContactsController extends GetxController {
       // Call API to check which numbers are registered
       final resp = await http.post(
         Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
+        headers: defaultHeaders,
         body: json.encode({"mobiles": mobileNumbers.toList()}),
       );
 
@@ -85,17 +98,24 @@ class ContactsController extends GetxController {
           });
         }).toList();
       } else {
+        // server error -> clear to avoid stale state
         registeredContacts.clear();
         unregisteredContacts.clear();
+        final msg = resp.reasonPhrase ?? 'Server error';
+        Get.snackbar('Contacts API error', msg);
       }
-    } on PlatformException {
+    } on PlatformException catch (e) {
       registeredContacts.clear();
       unregisteredContacts.clear();
+      Get.snackbar('Platform error', e.toString());
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
     } finally {
       isLoading.value = false;
     }
   }
 
+  /// Invite a contact: prefer WhatsApp, fallback to SMS
   Future<void> inviteContact(Contact contact) async {
     if (contact.phones.isEmpty) return;
     String phone = contact.phones.first.number.replaceAll(
@@ -118,6 +138,8 @@ class ContactsController extends GetxController {
     final sms = Uri.parse("sms:$phone?body=${Uri.encodeComponent(message)}");
     if (await canLaunchUrl(sms)) {
       await launchUrl(sms);
+    } else {
+      Get.snackbar('Cannot send', 'No app available to send invite');
     }
   }
 }

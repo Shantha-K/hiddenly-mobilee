@@ -1,101 +1,3 @@
-// import 'package:flutter/material.dart';
-// import 'package:get/get.dart';
-// import '../controllers/signup_controller.dart';
-
-// class SignupScreen extends StatelessWidget {
-//   final SignupController controller = Get.put(SignupController());
-
-// ignore_for_file: library_private_types_in_public_api
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Padding(
-//         padding: const EdgeInsets.all(24.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Container(
-//               height: 80,
-//               width: 80,
-//               decoration: BoxDecoration(
-//                 color: Colors.blue[900],
-//                 borderRadius: BorderRadius.circular(20),
-//               ),
-//               child: Center(
-//                 child: Text(
-//                   'IC',
-//                   style: TextStyle(
-//                     color: Colors.white,
-//                     fontSize: 32,
-//                     fontWeight: FontWeight.bold,
-//                   ),
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//             Text(
-//               'Inochat',
-//               style: TextStyle(
-//                 fontSize: 22,
-//                 fontWeight: FontWeight.bold,
-//                 color: Colors.blue[900],
-//               ),
-//             ),
-//             SizedBox(height: 8),
-//             Text(
-//               'Welcome To InoChat!',
-//               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-//             ),
-//             SizedBox(height: 24),
-//             TextField(
-//               controller: controller.nameController,
-//               decoration: InputDecoration(
-//                 hintText: 'Name',
-//                 filled: true,
-//                 fillColor: Colors.white,
-//                 border: OutlineInputBorder(),
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//             TextField(
-//               controller: controller.mobileController,
-//               decoration: InputDecoration(
-//                 hintText: 'Mobile Number',
-//                 filled: true,
-//                 fillColor: Colors.white,
-//                 border: OutlineInputBorder(),
-//               ),
-//               keyboardType: TextInputType.phone,
-//             ),
-//             SizedBox(height: 24),
-//             Obx(
-//               () => ElevatedButton(
-//                 onPressed: controller.isLoading.value
-//                     ? null
-//                     : controller.signUp,
-//                 child: controller.isLoading.value
-//                     ? CircularProgressIndicator(color: Colors.white)
-//                     : Text('Sign up'),
-//                 style: ElevatedButton.styleFrom(
-//                   minimumSize: Size(double.infinity, 48),
-//                   backgroundColor: Colors.blue[400],
-//                 ),
-//               ),
-//             ),
-//             SizedBox(height: 16),
-//             TextButton(
-//               onPressed: () {
-//                 Get.toNamed('/signin');
-//               },
-//               child: Text('Already have an account? Sign in'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -105,6 +7,7 @@ class SignupScreen extends StatefulWidget {
   const SignupScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _SignupScreenState createState() => _SignupScreenState();
 }
 
@@ -115,6 +18,11 @@ class _SignupScreenState extends State<SignupScreen> {
   void initState() {
     super.initState();
     controller = Get.put(SignupController());
+  }
+
+  bool isValidMobile(String mobile) {
+    final regex = RegExp(r'^[6-9]\d{9}$'); // Starts with 6-9, total 10 digits
+    return regex.hasMatch(mobile);
   }
 
   @override
@@ -148,7 +56,6 @@ class _SignupScreenState extends State<SignupScreen> {
                         ),
                       ),
                     ),
-
                     const SizedBox(height: 40),
                     Container(
                       width: 80,
@@ -187,9 +94,10 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
                     const SizedBox(height: 40),
 
-                    Align(
+                    // Name
+                    const Align(
                       alignment: Alignment.centerLeft,
-                      child: const Text(
+                      child: Text(
                         'Name',
                         style: TextStyle(
                           fontSize: 14,
@@ -221,9 +129,11 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
 
                     const SizedBox(height: 20),
-                    Align(
+
+                    // Mobile Number
+                    const Align(
                       alignment: Alignment.centerLeft,
-                      child: const Text(
+                      child: Text(
                         'Mobile Number',
                         style: TextStyle(
                           fontSize: 14,
@@ -256,39 +166,54 @@ class _SignupScreenState extends State<SignupScreen> {
                     ),
 
                     const SizedBox(height: 40),
-                    Obx(
-                      () => SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: controller.isLoading.value ? null : controller.signUp,
-                          
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
+
+                    // Sign up button
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: controller.isLoading.value
+                            ? null
+                            : () {
+                                String mobile = controller.mobileController.text.trim();
+                                if (!isValidMobile(mobile)) {
+                                  Get.snackbar(
+                                    'Invalid Mobile Number',
+                                    'Please enter a valid 10-digit mobile number',
+                                    backgroundColor: Colors.grey,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+                                controller.signUp();
+                              },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          child: controller.isLoading.value
-                              ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : const Text(
-                                  'Sign up',
-                                  style: TextStyle(fontSize: 16, color: Colors.white),
-                                ),
                         ),
+                        child: controller.isLoading.value
+                            ? const SizedBox(
+                                width: 24,
+                                height: 24,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : const Text(
+                                'Sign up',
+                                style: TextStyle(fontSize: 16, color: Colors.white),
+                              ),
                       ),
                     ),
+
                     const SizedBox(height: 20),
+
+                    // Sign in link
                     GestureDetector(
-                      onTap:
-                          controller.isLoading.value ? null : () => Get.toNamed('/signin'),
+                      onTap: controller.isLoading.value ? null : () => Get.toNamed('/signin'),
                       child: RichText(
                         text: const TextSpan(
                           text: 'Already have an account? ',
