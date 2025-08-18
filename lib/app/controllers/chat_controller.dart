@@ -1,28 +1,27 @@
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:inochat/app/core/cache_service.dart';
 
 class ChatController extends GetxController {
+  final CacheService _cacheService = CacheService();
+
   var chats = [].obs;
   var isLoading = false.obs;
 
   final String apiUrl = 'http://35.154.10.237:5000/api/chats';
-  final String token = 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk1OTg0NTQ5Y2VlNGE4ZTIwMzBmOGQiLCJtb2JpbGUiOiI3ODc2NTU2Nzg5IiwiaWF0IjoxNzU0NjM0MzMyLCJleHAiOjE3NTUyMzkxMzJ9.FQcacRUYFQbFDBuXPSEs9m-lFx74MIjKPrkvBkJ6LRk';
+  final String token =
+      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk1OTg0NTQ5Y2VlNGE4ZTIwMzBmOGQiLCJtb2JpbGUiOiI3ODc2NTU2Nzg5IiwiaWF0IjoxNzU0NjM0MzMyLCJleHAiOjE3NTUyMzkxMzJ9.FQcacRUYFQbFDBuXPSEs9m-lFx74MIjKPrkvBkJ6LRk';
 
   Future<void> fetchChats() async {
+    String? myMobileNumber = await _cacheService.getMyMobileNumber();
     try {
       isLoading(true);
 
-      var headers = {
-        'Content-Type': 'application/json',
-        'Authorization': token,
-      };
+      var headers = {'Content-Type': 'application/json'};
 
       var request = http.Request('GET', Uri.parse(apiUrl));
-      request.body = json.encode({
-        "email": "vana@gmail.com",
-        "qrText": "this is my qr"
-      });
+      request.body = json.encode({"mobile": myMobileNumber});
       request.headers.addAll(headers);
 
       var response = await request.send();

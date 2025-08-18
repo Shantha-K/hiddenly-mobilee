@@ -2,11 +2,14 @@ import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:inochat/app/core/cache_service.dart';
 
 class SignInController extends GetxController {
   final mobileController = TextEditingController();
   final otpController = TextEditingController();
+  final CacheService _cacheService = CacheService();
+
   var isLoading = false.obs;
   String? userId;
   String? serverOtp;
@@ -38,6 +41,9 @@ class SignInController extends GetxController {
         if (data['message'] == "OTP sent for login" && data['userId'] != null) {
           userId = data['userId'];
           serverOtp = data['otp']?.toString();
+
+          _cacheService.setUserId(data["userId"] ?? '');
+          _cacheService.setMyMobileNumber(mobileController.text);
 
           Get.toNamed(
             '/verify',

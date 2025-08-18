@@ -1,7 +1,5 @@
-// lib/app/screens/contacts/chat_detail_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import '../../controllers/contacts/chat_detail_controller.dart';
 
 class ChatDetailScreen extends StatelessWidget {
@@ -22,37 +20,17 @@ class ChatDetailScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Obx(() {
-          Contact? c = controller.contact.value;
+          String? c = controller.contact.value;
           return Row(
             children: [
               CircleAvatar(
-                radius: 18,
-                backgroundColor: Colors.grey[300],
-                backgroundImage:
-                    (c != null &&
-                        c.photoOrThumbnail != null &&
-                        c.photoOrThumbnail!.isNotEmpty)
-                    ? MemoryImage(c.photoOrThumbnail!)
-                    : null,
-                child:
-                    (c == null ||
-                        c.photoOrThumbnail == null ||
-                        c.photoOrThumbnail!.isEmpty)
-                    ? Text(
-                        c?.displayName?.isNotEmpty == true
-                            ? c!.displayName![0]
-                            : '?',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.blue[900],
-                          fontSize: 18,
-                        ),
-                      )
-                    : null,
+                radius: 24,
+                backgroundColor: Colors.grey[200],
+                child: Icon(Icons.person),
               ),
               const SizedBox(width: 10),
               Text(
-                c?.displayName ?? 'Unknown',
+                c ?? 'Unknown',
                 style: TextStyle(
                   color: Colors.blue[900],
                   fontWeight: FontWeight.bold,
@@ -84,7 +62,6 @@ class ChatDetailScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // Messages list
             Expanded(
               child: Obx(() {
                 if (controller.isLoading.value) {
@@ -103,6 +80,7 @@ class ChatDetailScreen extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final msg = controller.messages[index];
                     final isMe = msg['isMe'] == true;
+
                     return Align(
                       alignment: isMe
                           ? Alignment.centerRight
@@ -128,7 +106,7 @@ class ChatDetailScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              msg['text'] ?? '',
+                              msg['content'] ?? '',
                               style: TextStyle(
                                 color: isMe ? Colors.white : Colors.black87,
                                 fontSize: 16,
@@ -164,8 +142,6 @@ class ChatDetailScreen extends StatelessWidget {
                 );
               }),
             ),
-
-            // Input
             Padding(
               padding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).padding.bottom,

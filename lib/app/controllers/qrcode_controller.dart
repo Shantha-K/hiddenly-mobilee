@@ -1,9 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
-import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:google_sign_in/google_sign_in.dart';
 
 class QRCodeController extends GetxController {
   final qrTextController = TextEditingController();
@@ -12,91 +13,105 @@ class QRCodeController extends GetxController {
   var isLoading = false.obs;
   var saveSuccess = false.obs;
 
+  final String androidServerClientId =
+      '796190196521-bf7jaabnai769a3dn8qdak4qoihh6tb3.apps.googleusercontent.com';
+
+  @override
+  void onInit() {
+    super.onInit();
+    _initializeGoogleSignIn();
+  }
+
+  void _initializeGoogleSignIn() async {
+    GoogleSignIn(
+      clientId: androidServerClientId,
+      scopes: ['email', drive.DriveApi.driveFileScope],
+    );
+    debugPrint("Google Sign-In initialized");
+  }
+
   Future<void> generateAndSaveQr(BuildContext context) async {
     final qrText = qrTextController.text.trim();
     final email = emailController.text.trim();
+
     if (qrText.isEmpty || email.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Please enter both QR Text and Email.')),
-      );
+      _showSnack(context, 'Please enter both QR Text and Email.');
       return;
     }
-    isLoading.value = true;
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization':
-          'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk1OTg0NTQ5Y2VlNGE4ZTIwMzBmOGQiLCJtb2JpbGUiOiI3ODc2NTU2Nzg5IiwiaWF0IjoxNzU0NjM0MzMyLCJleHAiOjE3NTUyMzkxMzJ9.FQcacRUYFQbFDBuXPSEs9m-lFx74MIjKPrkvBkJ6LRk',
-    };
-    var request = http.Request(
-      'POST',
-      Uri.parse('http://35.154.10.237:5000/api/generate-qr'),
-    );
-    request.body = json.encode({"email": email, "qrText": qrText});
-    request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var data = json.decode(await response.stream.bytesToString());
-      qrBase64.value = data["qrCode"];
-      // Now upload to Google Drive
-      final uploadResult = await uploadQrToGoogleDrive(context);
-      saveSuccess.value = uploadResult;
-      if (uploadResult) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('QR code image saved to Google Drive!')),
-        );
-        Future.delayed(const Duration(milliseconds: 500), () {
-          Get.offAllNamed('/account_created');
-        });
-      }
-    } else {
-      qrBase64.value = null;
-      saveSuccess.value = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed: ${response.reasonPhrase}')),
+    isLoading.value = true;
+    try {
+      final response = await http.post(
+        Uri.parse('http://35.154.10.237:5000/api/generate-qr'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization':
+              'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk2ZTgxM2IxNDI0YTdhNGIxOWQ1NWYiLCJtb2JpbGUiOiI5ODc2NTQzNjYiLCJpYXQiOjE3NTQ3MjAzMzEsImV4cCI6MTc1NTMyNTEzMX0.8Y2X04qARp5WrKIDdeEqW19sRBsahujmeWD49rJtiec',
+        },
+        body: json.encode({"email": email, "qrText": qrText}),
       );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        qrBase64.value = data["qrCode"];
+        final uploaded = await uploadQrToGoogleDrive(context);
+        if (uploaded) {
+          Get.offAllNamed('/account_created');
+        } else {
+          _showSnack(context, 'Failed to save QR to Google Drive');
+        }
+      } else {
+        _showSnack(context, 'Failed to generate QR');
+      }
+    } catch (e) {
+      _showSnack(context, 'Error: $e');
+    } finally {
+      isLoading.value = false;
     }
-    isLoading.value = false;
   }
 
   Future<bool> uploadQrToGoogleDrive(BuildContext context) async {
     try {
-      final GoogleSignIn googleSignIn = GoogleSignIn(
-        clientId:
-            "362120589511-nlbum7u5tucsivuf37153vh0bp47hivq.apps.googleusercontent.com",
+      final googleSignIn = GoogleSignIn(
         scopes: [drive.DriveApi.driveFileScope],
       );
 
+      // Sign in the user
       final account = await googleSignIn.signIn();
       if (account == null) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Google sign-in cancelled.')));
+        _showSnack(context, 'Google sign-in cancelled.');
         return false;
       }
-      final authHeaders = await account.authHeaders;
-      final authenticateClient = GoogleAuthClient(authHeaders);
-      final driveApi = drive.DriveApi(authenticateClient);
 
-      // Prepare QR image bytes
-      final base64Str = qrBase64.value;
-      if (base64Str == null) return false;
-      final bytes = base64Decode(base64Str.split(',').last);
+      // Get auth headers
+      final headers = await account.authHeaders;
+      final authClient = GoogleAuthClient(headers);
+      final driveApi = drive.DriveApi(authClient);
+
+      if (qrBase64.value == null || !qrBase64.value!.startsWith('data:image')) {
+        _showSnack(context, 'Invalid QR code data');
+        return false;
+      }
+
+      final base64Data = qrBase64.value!.split(',').last;
+      final bytes = base64.decode(base64Data);
 
       final media = drive.Media(Stream.value(bytes), bytes.length);
-      final driveFile = drive.File();
-      driveFile.name =
-          'inochat_qr_${DateTime.now().millisecondsSinceEpoch}.png';
-      driveFile.mimeType = 'image/png';
+      final driveFile = drive.File()
+        ..name = 'inochat_qr_${DateTime.now().millisecondsSinceEpoch}.png'
+        ..mimeType = 'image/png';
 
       await driveApi.files.create(driveFile, uploadMedia: media);
       return true;
     } catch (e) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Google Drive upload failed: $e')));
+      print('Google Drive error: $e');
+      _showSnack(context, 'Google Drive error: $e');
       return false;
     }
+  }
+
+  void _showSnack(BuildContext context, String msg) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(msg)));
   }
 }
 
