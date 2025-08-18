@@ -18,7 +18,8 @@ class SplashController extends GetxController {
 
     if (userId != null && userId.isNotEmpty) {
       await Future.delayed(Duration(seconds: 3));
-      Get.offNamed(AppRoutes.HOME);
+      //Get.offNamed(AppRoutes.HOME);
+      Get.offNamed(AppRoutes.SIGNIN);
     } else {
       await Future.delayed(Duration(seconds: 3));
       Get.offNamed(AppRoutes.SIGNUP);
