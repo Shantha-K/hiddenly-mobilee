@@ -1,49 +1,116 @@
-// lib/app/controllers/contacts/chat_detail_controller.dart
 import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:http/http.dart' as http;
+import 'package:inochat/app/core/cache_service.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class ChatDetailController extends GetxController {
-  // Keep Contact object directly
-  var contact = Rxn<Contact>();
+  final CacheService _cacheService = CacheService();
 
-  // messages is a list of maps returned by server or locally added
   var messages = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
+  var chatId = ''.obs;
+  var contact = ''.obs;
+  String? myMobileNumber; 
 
-  // API details (token from your snippet)
-  final String messagesApi = 'http://35.154.10.237:5000/api/chat/message';
-  final Map<String, String> headers = {
-    'Authorization':
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4OTcyMWI1NzNlYWQ1OWMxMDUxNWYyNSIsIm1vYmlsZSI6IjcyODM4NjM1MDMiLCJuYW1lIjoiU2hhbnRoYSBWZW51Z29wYWxhcGEiLCJpYXQiOjE3NTQ3MzUwNjQsImV4cCI6MTc1NzMyNzA2NH0.W9u_s2J6V68zbwxlkQ2VzWWcu5olQYubcC7mTOesTwg',
-  };
+  late IO.Socket socket;
+
+  String get socketUrl => 'http://35.154.10.237:5000';
 
   @override
   void onInit() {
     super.onInit();
-    final arg = Get.arguments;
-    if (arg is Contact) {
-      contact.value = arg;
+    final args = Get.arguments;
+
+    if (args is Map<String, dynamic>) {
+      contact.value = args['contact'] ?? '';
+      chatId.value = args['chatId'] ?? '';
     } else {
-      contact.value = Contact(displayName: 'Unknown');
+      contact.value = 'unknown';
     }
 
+    _loadMyNumberAndInit();
+  }
+
+  Future<void> _loadMyNumberAndInit() async {
+    myMobileNumber = await _cacheService.getMyMobileNumber();
+    _initSocket();
     fetchMessages();
   }
 
+  void _initSocket() {
+    socket = IO.io(socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+    });
+
+    socket.connect();
+
+    socket.on('connect', (_) {
+      print('Socket connected: ${socket.id}');
+      socket.emit('joinChat', {'chatId': chatId.value});
+    });
+
+    socket.on('newMessage', (data) {
+      print('Received new message via socket: $data');
+
+      Map<String, dynamic>? msg;
+      if (data is Map<String, dynamic>) {
+        msg = data;
+      } else if (data is String) {
+        try {
+          msg = json.decode(data);
+        } catch (_) {}
+      }
+
+      if (msg != null) {
+        msg['isMe'] = (msg['senderMobile']?.toString() == myMobileNumber);
+        messages.add(msg);
+      }
+    });
+
+    socket.on('disconnect', (_) {
+      print('Socket disconnected');
+    });
+
+    socket.on('connect_error', (err) {
+      print('Socket connection error: $err');
+    });
+  }
+
+  @override
+  void onClose() {
+    socket.disconnect();
+    socket.dispose();
+    super.onClose();
+  }
+
   Future<void> fetchMessages() async {
+    var headers = {'Content-Type': 'application/json'};
     try {
       isLoading.value = true;
-      final resp = await http.get(Uri.parse(messagesApi), headers: headers);
+
+      final resp = await http.post(
+        Uri.parse('http://35.154.10.237:5000/api/chat/history'),
+        headers: headers,
+        body: json.encode({
+          "chatId": chatId.value,
+          "sender": myMobileNumber,
+          "receiver": contact.value,
+        }),
+      );
 
       if (resp.statusCode == 200) {
         final data = json.decode(resp.body);
+        print('Messages: $data');
 
-        // Expecting data['messages'] to be a list of objects/maps
-        if (data != null && data['messages'] is List) {
-          // normalize to list<Map<String,dynamic>>
-          messages.value = List<Map<String, dynamic>>.from(data['messages']);
+        if (data['chathistory'] is List) {
+          messages.value = List<Map<String, dynamic>>.from(
+            data['chathistory'].map((msg) {
+              msg['isMe'] = (msg['senderMobile']?.toString() == myMobileNumber);
+              return msg;
+            }),
+          );
         } else {
           messages.clear();
         }
@@ -57,20 +124,37 @@ class ChatDetailController extends GetxController {
     }
   }
 
-  /// Add local message instantly (you can extend to POST to server)
-  void sendMessage(String text) {
+  void sendMessage(String text) async {
     if (text.trim().isEmpty) return;
-    messages.add({'text': text, 'isMe': true, 'time': _nowString()});
-  }
 
-  Future<void> refreshMessages() async {
-    await fetchMessages();
-  }
+    final newMessage = {
+      "chatId": chatId.value,
+      "content": text,
+      "senderMobile": myMobileNumber,
+      "timestamp": DateTime.now().toIso8601String(),
+      "isMe": true,
+    };
+    messages.add(newMessage);
 
-  String _nowString() {
-    final now = DateTime.now();
-    final hh = now.hour.toString().padLeft(2, '0');
-    final mm = now.minute.toString().padLeft(2, '0');
-    return "$hh:$mm";
+    var headers = {'Content-Type': 'application/json'};
+    var request = http.Request(
+      'POST',
+      Uri.parse('http://35.154.10.237:5000/api/chat/instant-message'),
+    );
+    request.body = json.encode({
+      "chatId": chatId.value,
+      "content": text,
+      "senderMobile": myMobileNumber,
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+    if (response.statusCode == 200) {
+      print(await response.stream.bytesToString());
+    } else {
+      print(response.reasonPhrase);
+    }
+
+    socket.emit('sendMessage', newMessage);
   }
 }

@@ -98,7 +98,7 @@ class ContactsScreen extends StatelessWidget {
                     ),
                     onTap: () {
                       // pass Contact object directly to chat screen
-                      Get.toNamed('/chat_detail', arguments: contact);
+                      controller.creatChatRoom(contact);
                     },
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,

@@ -77,11 +77,20 @@ class QRCodeScreen extends StatelessWidget {
                 ElevatedButton(
                   onPressed: controller.isLoading.value
                       ? null
-                      : () => controller.generateAndSaveQr(context),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 48),
-                    backgroundColor: Colors.blue[400],
-                  ),
+                      : () async {
+                          // Show loading indicator immediately
+                          controller.isLoading.value = true;
+
+                          try {
+                            await controller.generateAndSaveQr(context);
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Error: $e')),
+                            );
+                          } finally {
+                            controller.isLoading.value = false;
+                          }
+                        },
                   child: controller.isLoading.value
                       ? SizedBox(
                           width: 24,

@@ -15,6 +15,8 @@ class VerifyController extends GetxController {
   var isNewUser = false;
   bool lastVerifySuccess = false;
 
+  final myMobileNumber = ''.obs;
+
   @override
   void onInit() {
     super.onInit();
@@ -22,8 +24,7 @@ class VerifyController extends GetxController {
     if (args != null) {
       otp.value = args['otp']?.toString() ?? '';
       mobile.value = args['mobile']?.toString() ?? '';
-      deviceId.value = args['deviceId']?.toString() ?? '';
-      userId.value = args['userId']?.toString() ?? '';
+      myMobileNumber.value = args['myMobileNumber']?.toString() ?? '';
       name.value = args['name']?.toString() ?? '';
       isNewUser = args['isNewUser'] ?? false;
     }

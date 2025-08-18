@@ -70,3 +70,5 @@ class AppRoutes {
     GetPage(name: CHAT, page: () => ChatScreen(), binding: ChatBinding()),
   ];
 }
+
+
