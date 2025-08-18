@@ -30,6 +30,8 @@ class _SignupScreenState extends State<SignupScreen> {
     return Scaffold(
       body: Obx(
         () => Container(
+          width: double.infinity,
+          height: double.infinity,
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xFFe0f7fa), Color(0xFF80deea)],
@@ -42,22 +44,19 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    // Back button
                     Align(
                       alignment: Alignment.topLeft,
-                      child: CircleAvatar(
-                        radius: 15,
-                        backgroundColor: Colors.white,
-                        child: IconButton(
-                          padding: EdgeInsets.zero,
-                          alignment: Alignment.center,
-                          icon: const Icon(
-                            Icons.arrow_back,
-                            color: Colors.black,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: CircleAvatar(
+                          radius: 18,
+                          backgroundColor: Colors.white,
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_back, color: Colors.black),
+                            onPressed: () => Get.back(),
                           ),
-                          onPressed: () => Get.back(),
                         ),
                       ),
                     ),
@@ -88,12 +87,12 @@ class _SignupScreenState extends State<SignupScreen> {
                         color: Colors.blueAccent,
                       ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 13),
                     const Text(
                       'Welcome To Inochat!',
                       style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
+                        fontSize: 21,
+                        color: Colors.black,
                         fontWeight: FontWeight.w900,
                       ),
                     ),
@@ -106,7 +105,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         'Name',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black54,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -122,8 +121,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         LengthLimitingTextInputFormatter(30),
                       ],
                       decoration: InputDecoration(
+                        fillColor: Colors.white,
                         hintText: 'Enter Name',
-                        hintStyle: TextStyle(color: Colors.black),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 14,
@@ -136,9 +135,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.blueAccent,
-                          ),
+                          borderSide: const BorderSide(color: Colors.white),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
@@ -153,7 +150,7 @@ class _SignupScreenState extends State<SignupScreen> {
                         'Mobile Number',
                         style: TextStyle(
                           fontSize: 14,
-                          color: Colors.black54,
+                          color: Colors.black,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -169,8 +166,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       ],
                       decoration: InputDecoration(
                         fillColor: Colors.white,
-                        hintText: ' Enter Mobile Number',
-                        hintStyle: TextStyle(color: Colors.black),
+                        hintText: 'Enter Mobile Number',
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 10,
                           vertical: 14,
@@ -183,9 +179,7 @@ class _SignupScreenState extends State<SignupScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(
-                            color: Colors.blueAccent,
-                          ),
+                          borderSide: const BorderSide(color: Colors.white),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
