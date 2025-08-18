@@ -11,11 +11,12 @@ class ChatDetailController extends GetxController {
   var isLoading = false.obs;
   var chatId = ''.obs;
   var contact = ''.obs;
-  String? myMobileNumber; 
+  var username = ''.obs;
+  String? myMobileNumber;
 
   late IO.Socket socket;
 
-  String get socketUrl => 'http://35.154.10.237:5000';
+  String get socketUrl => 'http://35.154.10.237:3000';
 
   @override
   void onInit() {
@@ -25,6 +26,7 @@ class ChatDetailController extends GetxController {
     if (args is Map<String, dynamic>) {
       contact.value = args['contact'] ?? '';
       chatId.value = args['chatId'] ?? '';
+      username.value = args['name'] ?? ''; // Get contact name from arguments
     } else {
       contact.value = 'unknown';
     }

@@ -14,6 +14,7 @@ class ContactsController extends GetxController {
   final registeredContacts = <Contact>[].obs;
   final unregisteredContacts = <Contact>[].obs;
   final isLoading = false.obs;
+  var username = ''.obs;
 
   // APIs
   static const String _checkExistUrl =
@@ -177,13 +178,14 @@ class ContactsController extends GetxController {
 
   /// Create (or get) a chat room between me and the selected device contact,
   /// always using last-10-digit normalized numbers.
-  Future<void> creatChatRoom(Contact contact) async {
+  Future<void> creatChatRoom(Contact contact, String name) async {
     try {
       // 1) Validate contact has a number
       if (contact.phones.isEmpty) {
         Get.snackbar('Error', 'Selected contact has no phone number.');
         return;
       }
+
 
       // 2) Read my number from cache
       final myRaw = await _cacheService.getMyMobileNumber();
@@ -225,6 +227,7 @@ class ContactsController extends GetxController {
           'chatId': chatId.toString(),
           // Important: pass the same normalized receiver used in history API
           'contact': receiver,
+          'name': name, // Pass contact name for display
         },
       );
     } catch (e, st) {

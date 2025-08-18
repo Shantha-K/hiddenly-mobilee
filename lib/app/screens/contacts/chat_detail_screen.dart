@@ -30,7 +30,7 @@ class ChatDetailScreen extends StatelessWidget {
               ),
               const SizedBox(width: 10),
               Text(
-                c ?? 'Unknown',
+                controller.username.value ?? 'Unknown',
                 style: TextStyle(
                   color: Colors.blue[900],
                   fontWeight: FontWeight.bold,
