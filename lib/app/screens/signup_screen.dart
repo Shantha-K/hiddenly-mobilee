@@ -42,6 +42,8 @@ class _SignupScreenState extends State<SignupScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: SingleChildScrollView(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Align(
                       alignment: Alignment.topLeft,
@@ -51,7 +53,10 @@ class _SignupScreenState extends State<SignupScreen> {
                         child: IconButton(
                           padding: EdgeInsets.zero,
                           alignment: Alignment.center,
-                          icon: const Icon(Icons.arrow_back, color: Colors.black),
+                          icon: const Icon(
+                            Icons.arrow_back,
+                            color: Colors.black,
+                          ),
                           onPressed: () => Get.back(),
                         ),
                       ),
@@ -111,18 +116,29 @@ class _SignupScreenState extends State<SignupScreen> {
                       controller: controller.nameController,
                       onChanged: (val) => controller.name.value = val,
                       inputFormatters: [
-                        FilteringTextInputFormatter.allow(RegExp(r'[a-zA-Z\s]')),
+                        FilteringTextInputFormatter.allow(
+                          RegExp(r'[a-zA-Z\s]'),
+                        ),
                         LengthLimitingTextInputFormatter(30),
                       ],
                       decoration: InputDecoration(
-                        hintText: 'Balji',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+                        hintText: 'Enter Name',
+                        hintStyle: TextStyle(color: Colors.black),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 14,
+                        ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white, width: 1),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white),
+                          borderSide: const BorderSide(
+                            color: Colors.blueAccent,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
@@ -152,14 +168,24 @@ class _SignupScreenState extends State<SignupScreen> {
                         LengthLimitingTextInputFormatter(10),
                       ],
                       decoration: InputDecoration(
-                        hintText: '7759125826',
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+                        fillColor: Colors.white,
+                        hintText: ' Enter Mobile Number',
+                        hintStyle: TextStyle(color: Colors.black),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 14,
+                        ),
                         enabledBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white, width: 1),
+                          borderSide: const BorderSide(
+                            color: Colors.grey,
+                            width: 1,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide: const BorderSide(color: Colors.white),
+                          borderSide: const BorderSide(
+                            color: Colors.blueAccent,
+                          ),
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
@@ -174,7 +200,8 @@ class _SignupScreenState extends State<SignupScreen> {
                         onPressed: controller.isLoading.value
                             ? null
                             : () {
-                                String mobile = controller.mobileController.text.trim();
+                                String mobile = controller.mobileController.text
+                                    .trim();
                                 if (!isValidMobile(mobile)) {
                                   Get.snackbar(
                                     'Invalid Mobile Number',
@@ -204,7 +231,10 @@ class _SignupScreenState extends State<SignupScreen> {
                               )
                             : const Text(
                                 'Sign up',
-                                style: TextStyle(fontSize: 16, color: Colors.white),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
                               ),
                       ),
                     ),
@@ -213,7 +243,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
                     // Sign in link
                     GestureDetector(
-                      onTap: controller.isLoading.value ? null : () => Get.toNamed('/signin'),
+                      onTap: controller.isLoading.value
+                          ? null
+                          : () => Get.toNamed('/signin'),
                       child: RichText(
                         text: const TextSpan(
                           text: 'Already have an account? ',

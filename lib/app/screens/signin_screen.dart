@@ -30,14 +30,18 @@ class SignInScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(height: 24),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back_ios_new,
-                        color: Colors.grey[700],
+                  CircleAvatar(
+                    radius: 15,
+                    backgroundColor: Colors.black,
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: IconButton(
+                        icon: Icon(
+                          Icons.arrow_back_ios_new,
+                          color: Colors.grey[700],
+                        ),
+                        onPressed: () => Get.back(),
                       ),
-                      onPressed: () => Get.back(),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -131,20 +135,24 @@ class SignInScreen extends StatelessWidget {
                       LengthLimitingTextInputFormatter(10),
                     ],
                     decoration: InputDecoration(
-                      hintText: '7759125826',
+                      hintText: 'Enter Mobile Number',
+                      hintStyle: TextStyle(color: Colors.black),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 10,
                         vertical: 14,
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
-                          color: Colors.white,
+                          color: Colors.grey,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       focusedBorder: OutlineInputBorder(
-                        borderSide: const BorderSide(color: Colors.white),
+                        borderSide: const BorderSide(
+                          color: Colors.blueAccent,
+                          width: 1,
+                        ),
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),

@@ -44,6 +44,7 @@ class SignInController extends GetxController {
 
           _cacheService.setUserId(data["userId"] ?? '');
           _cacheService.setMyMobileNumber(mobileController.text);
+              Get.snackbar('Success', 'OTP sent successfully: ${data["otp"]}');
 
           Get.toNamed(
             '/verify',
