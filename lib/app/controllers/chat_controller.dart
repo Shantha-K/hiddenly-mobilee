@@ -1,47 +1,57 @@
+// lib/app/controllers/chat_controller.dart
 import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:inochat/app/core/cache_service.dart';
 
 class ChatController extends GetxController {
-  final CacheService _cacheService = CacheService();
-
-  var chats = [].obs;
+  var chats = <Map<String, dynamic>>[].obs;
   var isLoading = false.obs;
 
-  final String apiUrl = 'http://35.154.10.237:5000/api/chats';
-  final String token =
-      'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2ODk1OTg0NTQ5Y2VlNGE4ZTIwMzBmOGQiLCJtb2JpbGUiOiI3ODc2NTU2Nzg5IiwiaWF0IjoxNzU0NjM0MzMyLCJleHAiOjE3NTUyMzkxMzJ9.FQcacRUYFQbFDBuXPSEs9m-lFx74MIjKPrkvBkJ6LRk';
+  final String apiUrl = "http://35.154.10.237:5000/api/chats";
 
+  /// Fetch chats from API
   Future<void> fetchChats() async {
-    String? myMobileNumber = await _cacheService.getMyMobileNumber();
     try {
-      isLoading(true);
+      isLoading.value = true;
+
+      // Get mobile number dynamically from cache
+      final String? mobileNumber = await CacheService().getMyMobileNumber();
+
+      if (mobileNumber == null) {
+        print("⚠️ No mobile number found in cache");
+        isLoading.value = false;
+        return;
+      }
 
       var headers = {'Content-Type': 'application/json'};
 
       var request = http.Request('GET', Uri.parse(apiUrl));
-      request.body = json.encode({"mobile": myMobileNumber});
+      request.body = json.encode({"mobile": mobileNumber});
       request.headers.addAll(headers);
 
-      var response = await request.send();
+      http.StreamedResponse response = await request.send();
 
       if (response.statusCode == 200) {
-        var data = jsonDecode(await response.stream.bytesToString());
-        chats.assignAll(data['chats']);
+        String data = await response.stream.bytesToString();
+        final parsed = json.decode(data);
+
+        if (parsed["chats"] != null) {
+          chats.value = List<Map<String, dynamic>>.from(parsed["chats"]);
+        }
       } else {
-        Get.snackbar("Error", response.reasonPhrase ?? "Unknown error");
+        print("❌ Error: ${response.reasonPhrase}");
       }
     } catch (e) {
-      Get.snackbar("Error", e.toString());
+      print("❌ Exception while fetching chats: $e");
     } finally {
-      isLoading(false);
+      isLoading.value = false;
     }
   }
 
   @override
   void onInit() {
-    fetchChats();
     super.onInit();
+    fetchChats();
   }
 }
