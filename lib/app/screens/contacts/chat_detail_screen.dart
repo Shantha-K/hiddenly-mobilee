@@ -20,6 +20,7 @@ class ChatDetailScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
         title: Obx(() {
+          String? c = controller.contact.value;
           return Row(
             children: [
               CircleAvatar(

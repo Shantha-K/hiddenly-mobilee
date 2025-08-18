@@ -18,33 +18,33 @@ class SignInScreen extends StatelessWidget {
           height: double.infinity,
           decoration: BoxDecoration(
             gradient: LinearGradient(
+              colors: [Color(0xFFe0f7fa), Color(0xFF80deea)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
-              colors: [Color(0xFFEAF6FF), Color(0xFFB6E0FE)],
             ),
           ),
           child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: 24),
-                  CircleAvatar(
-                    radius: 15,
-                    backgroundColor: Colors.black,
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                        icon: Icon(
-                          Icons.arrow_back_ios_new,
-                          color: Colors.grey[700],
+                  // Back button
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CircleAvatar(
+                        radius: 18,
+                        backgroundColor: Colors.white,
+                        child: IconButton(
+                          icon: Icon(Icons.arrow_back, color: Colors.black),
+                          onPressed: () => Get.back(),
                         ),
-                        onPressed: () => Get.back(),
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  // Merge the children of the inner Column directly here
+                  SizedBox(height: 40),
                   Container(
                     height: 80,
                     width: 80,
@@ -72,48 +72,17 @@ class SignInScreen extends StatelessWidget {
                       color: Colors.blue[900],
                     ),
                   ),
-                  SizedBox(height: 16),
+                  SizedBox(height: 20),
                   Text(
                     'Welcome To Inochat!',
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 21,
                       fontWeight: FontWeight.w500,
-                      color: Colors.blue[900],
+                      color: Colors.black,
                     ),
                   ),
                   SizedBox(height: 24),
-                  // Container(
-                  //   decoration: BoxDecoration(
-                  //     color: Colors.white.withOpacity(0.7),
-                  //     borderRadius: BorderRadius.circular(8),
-                  //     border: Border.all(color: Colors.blue[100]!, width: 2),
-                  //   ),
-                  //   child: Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.start,
-                  //     children: [
-                  //       Padding(
-                  //         padding: const EdgeInsets.only(left: 12, top: 8),
-                  //         child: Text(
-                  //           textAlign: TextAlign.center,
-                  //           'Mobile Number',
-                  //           style: TextStyle(
-                  //             color: Colors.grey[700],
-                  //             fontSize: 14,
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       TextField(
-                  //         controller: controller.mobileController,
-                  //         keyboardType: TextInputType.phone,
-                  //         decoration: InputDecoration(
-                  //           border: InputBorder.none,
-                  //           contentPadding: EdgeInsets.symmetric(
-                  //             horizontal: 12,
-                  //             vertical: 8,
-                  //           ),
-                  //           hintText: 'enter your mobile number',
-                  //         ),
-                  //       ),
+              
                   Align(
                     alignment: Alignment.centerLeft,
                     child: const Text(
@@ -135,6 +104,7 @@ class SignInScreen extends StatelessWidget {
                       LengthLimitingTextInputFormatter(10),
                     ],
                     decoration: InputDecoration(
+                      fillColor: Colors.white,
                       hintText: 'Enter Mobile Number',
                       hintStyle: TextStyle(color: Colors.black),
                       contentPadding: const EdgeInsets.symmetric(
@@ -150,7 +120,7 @@ class SignInScreen extends StatelessWidget {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
-                          color: Colors.blueAccent,
+                          color: Colors.white,
                           width: 1,
                         ),
                         borderRadius: BorderRadius.circular(8),

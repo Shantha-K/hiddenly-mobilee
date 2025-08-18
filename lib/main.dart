@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'app/routes/app_routes.dart';
 
+
+
 void main() {
   runApp(MyApp());
 }
@@ -21,6 +23,27 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
     );
   }
-}
+ }
+// import 'package:flutter/material.dart';
+
+// void main() {
+//   runApp(MyApp());
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'InoChat',
+//       theme: ThemeData(
+//         fontFamily: 'Poppins', // Apply globally
+//       ),
+//       home: Scaffold(
+//         appBar: AppBar(title: Text('InoChat')),
+//         body: Center(child: Text('Welcome to InoChat!')),
+//       ),
+//     );
+//   }
+// }
 
 // ...existing code...
