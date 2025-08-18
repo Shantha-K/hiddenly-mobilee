@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:inochat/app/screens/settings_screen.dart';
 import 'contacts/contacts_screen.dart';
 import 'chat/chat_screen.dart';
 import 'status/status_screen.dart';
@@ -107,18 +110,64 @@ class _HomeScreenState extends State<HomeScreen> {
                       Row(
                         children: [
                           IconButton(
-                            icon: Icon(Icons.search, color: Color(0xFF7B8FA1)),
-                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.search,
+                              color: Color(0xFF7B8FA1),
+                            ),
+                            onPressed: () {
+                              // Navigate to ContactsScreen using GetX
+                              Get.to(() => ContactsScreen());
+                            },
                           ),
-                          IconButton(
-                            icon: Icon(
+                          PopupMenuButton<String>(
+                            icon: const Icon(
                               Icons.more_vert,
                               color: Color(0xFF7B8FA1),
                             ),
-                            onPressed: () {},
+                            onSelected: (value) {
+                              switch (value) {
+                                case "new_group":
+                                  Get.to(
+                                    () => ContactsScreen(),
+                                  ); // open contacts for group
+                                  break;
+                                case "settings":
+                                  Get.to(
+                                    () => SettingsScreen(),
+                                  ); // open settings screen
+                                  break;
+                              }
+                            },
+                            itemBuilder: (BuildContext context) => [
+                              const PopupMenuItem(
+                                value: "new_group",
+                                child: Text("New Group"),
+                              ),
+                              const PopupMenuDivider(), // divider line
+                              const PopupMenuItem(
+                                value: "settings",
+                                child: Text("Settings"),
+                              ),
+                            ],
                           ),
                         ],
                       ),
+
+                      //     Row(
+                      //       children: [
+                      //         IconButton(
+                      //           icon: Icon(Icons.search, color: Color(0xFF7B8FA1)),
+                      //           onPressed: () {},
+                      //         ),
+                      //         IconButton(
+                      //           icon: Icon(
+                      //             Icons.more_vert,
+                      //             color: Color(0xFF7B8FA1),
+                      //           ),
+                      //           onPressed: () {},
+                      //         ),
+                      //       ],
+                      //     ),
                     ],
                   ),
                 ),
