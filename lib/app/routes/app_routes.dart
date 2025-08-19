@@ -1,8 +1,10 @@
 // ignore_for_file: constant_identifier_names
 
+import 'package:inochat/app/bindings/contacts/group_binding.dart';
 import 'package:inochat/app/bindings/home_binding.dart';
-import 'package:inochat/app/bindings/user_contact_binding.dart';
-import 'package:inochat/app/screens/chat/user_contact_screen.dart';
+import 'package:inochat/app/bindings/search_binding.dart';
+import 'package:inochat/app/screens/chat/group_screen.dart';
+import 'package:inochat/app/screens/chat/search_screen.dart';
 import 'package:inochat/app/screens/contacts/chat_detail_screen.dart';
 import 'package:inochat/app/screens/home_screen.dart';
 
@@ -43,9 +45,10 @@ class AppRoutes {
   static const USERCONTACT = '/user_contact';
   static const CONTACTS_SCREEN = '/contacts_screen';
   static const PRIVACY = '/privacy';
-  
-  static const SEARCH_CONTACTS = '/search_contacts';
+
+  static const SEARCH_CONTACTS = '/search_screen';
   static const UNLOCK = '/unlock';
+  static const GROUP = '/group_screen';
 
   static final routes = [
     GetPage(name: STATUS, page: () => StatusScreen(), binding: StatusBinding()),
@@ -77,13 +80,10 @@ class AppRoutes {
     ),
     GetPage(name: CHAT, page: () => ChatScreen(), binding: ChatBinding()),
     GetPage(
-      name: USERCONTACT,
-      page: () => UserContactsScreen(),
-      binding: UserContactsBinding(),
+      name: SEARCH_CONTACTS,
+      page: () => SearchScreen(),
+      binding: SearchBinding(),
     ),
+    GetPage(name: GROUP, page: () => GroupScreen(), binding: GroupBinding()),
   ];
-  
-  static UserContactsScreen() {}
 }
-
-

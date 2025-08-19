@@ -26,7 +26,7 @@ class ChatController extends GetxController {
 
       var headers = {'Content-Type': 'application/json'};
 
-      var request = http.Request('GET', Uri.parse(apiUrl));
+      var request = http.Request('POST', Uri.parse(apiUrl));
       request.body = json.encode({"mobile": mobileNumber});
       request.headers.addAll(headers);
 
