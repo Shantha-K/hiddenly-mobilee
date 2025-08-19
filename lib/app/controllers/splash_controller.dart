@@ -22,7 +22,7 @@ class SplashController extends GetxController {
       Get.offNamed(AppRoutes.SIGNIN);
     } else {
       await Future.delayed(Duration(seconds: 3));
-      Get.offNamed(AppRoutes.SIGNUP);
+      Get.offNamed(AppRoutes.SIGNIN);
     }
   }
 }
