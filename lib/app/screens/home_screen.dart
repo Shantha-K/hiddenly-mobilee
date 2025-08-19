@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:inochat/app/routes/app_routes.dart';
+import 'package:inochat/app/screens/chat/search_screen.dart';
 import 'package:inochat/app/screens/settings/settings_screen.dart';
 import 'contacts/contacts_screen.dart';
 import 'chat/chat_screen.dart';
@@ -127,8 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             onSelected: (value) {
                               switch (value) {
                                 case "new_group":
-                                  Get.to(
-                                    () => ContactsScreen(),
+                                  Get.toNamed(
+                                    AppRoutes.SEARCH_CONTACTS,
                                   ); // open contacts for group
                                   break;
                                 case "settings":
