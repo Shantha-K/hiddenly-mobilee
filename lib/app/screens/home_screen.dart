@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-import 'package:inochat/app/screens/settings_screen.dart';
+import 'package:inochat/app/screens/settings/settings_screen.dart';
 import 'contacts/contacts_screen.dart';
 import 'chat/chat_screen.dart';
 import 'status/status_screen.dart';
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   break;
                                 case "settings":
                                   Get.to(
-                                    () => SettingsScreen(),
+                                    () => SettingsView(),
                                   ); // open settings screen
                                   break;
                               }
