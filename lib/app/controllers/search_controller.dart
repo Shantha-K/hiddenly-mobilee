@@ -16,6 +16,9 @@ class SearchController extends GetxController {
   final isLoading = false.obs;
   var username = ''.obs;
 
+  
+  final selectedContacts = <Contact>[].obs;
+
   // APIs
   static const String _checkExistUrl =
       "http://35.154.10.237:5000/api/contacts/check-exist";
@@ -122,6 +125,15 @@ class SearchController extends GetxController {
     }
   }
 
+  /// ✅ Add/remove selected contact
+  void toggleSelection(Contact contact) {
+    if (selectedContacts.contains(contact)) {
+      selectedContacts.remove(contact);
+    } else {
+      selectedContacts.add(contact);
+    }
+  }
+
   Future<void> inviteContact(Contact contact) async {
     if (contact.phones.isEmpty) return;
 
@@ -166,12 +178,11 @@ class SearchController extends GetxController {
       }
 
       final receiver = _last10Digits(contact.phones.first.number);
-
       if (receiver == null) {
         Get.snackbar('Error', 'Invalid receiver number.');
         return;
       }
-
+      // no-op for now
     } catch (e) {
       Get.snackbar('Error', 'Something went wrong while opening the chat.');
     }

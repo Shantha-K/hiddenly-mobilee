@@ -44,4 +44,6 @@ class CacheService {
     if (mobileNumber == null || mobileNumber == "") return null;
     return "$mobileNumber";
   }
+
+  Future getToken() async {}
 }

@@ -1,9 +1,11 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:inochat/app/bindings/contacts/group_binding.dart';
+import 'package:inochat/app/bindings/contacts/groupchat_binding.dart';
 import 'package:inochat/app/bindings/home_binding.dart';
 import 'package:inochat/app/bindings/search_binding.dart';
 import 'package:inochat/app/screens/chat/group_screen.dart';
+import 'package:inochat/app/screens/chat/groupchat_screen.dart';
 import 'package:inochat/app/screens/chat/search_screen.dart';
 import 'package:inochat/app/screens/contacts/chat_detail_screen.dart';
 import 'package:inochat/app/screens/home_screen.dart';
@@ -49,6 +51,7 @@ class AppRoutes {
   static const SEARCH_CONTACTS = '/search_screen';
   static const UNLOCK = '/unlock';
   static const GROUP = '/group_screen';
+  static const GROUPCHAT = '/groupchat_screen';
 
   static final routes = [
     GetPage(name: STATUS, page: () => StatusScreen(), binding: StatusBinding()),
@@ -84,6 +87,20 @@ class AppRoutes {
       page: () => SearchScreen(),
       binding: SearchBinding(),
     ),
-    GetPage(name: GROUP, page: () => GroupScreen(), binding: GroupBinding()),
+    GetPage(
+      name: GROUP,
+      page: () => GroupScreen(selectedContacts: []),
+      binding: GroupBinding(),
+    ),
+
+    GetPage(
+      name: GROUPCHAT,
+      page: () => GroupChatScreen(
+        createdGroupId: '',
+        createdGroupName: '',
+        selectedContacts: [],
+      ),
+      binding: GroupchatBinding(),
+    ),
   ];
 }
