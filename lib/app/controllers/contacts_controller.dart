@@ -186,7 +186,6 @@ class ContactsController extends GetxController {
         return;
       }
 
-
       // 2) Read my number from cache
       final myRaw = await _cacheService.getMyMobileNumber();
       final sender = _last10Digits(myRaw ?? '');
@@ -225,9 +224,8 @@ class ContactsController extends GetxController {
         '/chat_detail',
         arguments: {
           'chatId': chatId.toString(),
-          // Important: pass the same normalized receiver used in history API
           'contact': receiver,
-          'name': name, // Pass contact name for display
+          'name': name,
         },
       );
     } catch (e, st) {
