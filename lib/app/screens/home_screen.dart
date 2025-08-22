@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:inochat/app/controllers/chat_controller.dart';
+import 'package:inochat/app/controllers/contacts/chat_detail_controller.dart';
 import 'package:inochat/app/routes/app_routes.dart';
 import 'package:inochat/app/screens/chat/search_screen.dart';
 import 'package:inochat/app/screens/settings/settings_screen.dart';
@@ -16,6 +18,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final ChatController controller = Get.put(ChatController());
+
   int _selectedIndex = 0;
   final PageController _pageController = PageController();
   static final List<Widget> _screens = [
@@ -129,9 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             onSelected: (value) {
                               switch (value) {
                                 case "new_group":
-                                  Get.toNamed(
-                                    AppRoutes.SEARCH_CONTACTS,
-                                  ); // open contacts for group
+                                  Get.toNamed(AppRoutes.SEARCH_CONTACTS)!.then((
+                                    _,
+                                  ) {
+                                    // open contacts for group
+                                    controller.fetchChats();
+                                  });
                                   break;
                                 case "settings":
                                   Get.to(

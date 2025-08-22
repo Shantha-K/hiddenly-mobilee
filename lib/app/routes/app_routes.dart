@@ -41,7 +41,7 @@ class AppRoutes {
   static const FINGERPRINT = '/fingerprint';
   static const QRCODE = '/qrcode';
   static const ACCOUNT_CREATED = '/account_created';
-  static const CHAT = '/chat';
+  static const CHAT = '/chat_screen';
   static const HOME = '/home';
   static const CHATDETAIL = '/chat_detail';
   static const USERCONTACT = '/user_contact';
@@ -95,11 +95,7 @@ class AppRoutes {
 
     GetPage(
       name: GROUPCHAT,
-      page: () => GroupChatScreen(
-        createdGroupId: '',
-        createdGroupName: '',
-        selectedContacts: [],
-      ),
+      page: () => GroupChatScreen(),
       binding: GroupchatBinding(),
     ),
   ];
