@@ -208,7 +208,7 @@ class SearchScreen extends GetWidget<SearchController> {
           backgroundColor: Colors.blue,
           child: const Icon(Icons.arrow_forward, color: Colors.white),
           onPressed: () {
-            Get.to(
+            Get.off(
               () => GroupScreen(
                 selectedContacts: controller.selectedContacts.toList(),
               ),
@@ -219,5 +219,3 @@ class SearchScreen extends GetWidget<SearchController> {
     );
   }
 }
-
-

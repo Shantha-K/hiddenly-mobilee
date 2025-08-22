@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_contacts/flutter_contacts.dart';
-import 'package:inochat/app/screens/chat/groupchat_screen.dart';
+import 'package:inochat/app/core/cache_service.dart';
 
 class GroupController extends GetxController {
   final groupName = ''.obs;
@@ -18,6 +18,8 @@ class GroupController extends GetxController {
   final isLoading = false.obs;
 
   Future<void> createGroup(List<Contact> selectedContacts) async {
+    String? myMobileNumber = await CacheService().getMyMobileNumber();
+
     if (groupName.value.trim().isEmpty) {
       Get.snackbar('Error', 'Please enter a group name');
       return;
@@ -30,11 +32,21 @@ class GroupController extends GetxController {
     try {
       isLoading.value = true;
 
-      final participants = selectedContacts
+      // final participants = selectedContacts
+      //     .map((c) => c.phones.isNotEmpty ? c.phones.first.number : '')
+      //     .map(_last10Digits)
+      //     .whereType<String>()
+      //     .toList();
+
+      List<String> selectContacts = selectedContacts
           .map((c) => c.phones.isNotEmpty ? c.phones.first.number : '')
           .map(_last10Digits)
           .whereType<String>()
           .toList();
+
+      selectContacts.add(myMobileNumber!);
+
+      print('Selected contacts: $selectContacts');
 
       final contentTypes = <String>[];
       if (textChecked.value) contentTypes.add('text');
@@ -53,7 +65,7 @@ class GroupController extends GetxController {
         headers: const {'Content-Type': 'application/json'},
         body: json.encode({
           "title": groupName.value.trim(),
-          "participants": participants,
+          "participants": selectContacts,
           "autoDelete": autoDelete,
           "autoDeleteAt": deleteAt?.toUtc().toIso8601String(),
           "contentTypes": contentTypes,
@@ -65,7 +77,7 @@ class GroupController extends GetxController {
         final group = data['group'];
 
         final String createdGroupId = group?['_id']?.toString() ?? '';
-        print("Created group ID: $createdGroupId");
+        print('Created group ID: $createdGroupId');
         final String createdGroupName =
             group?['title']?.toString() ?? groupName.value.trim();
 
@@ -74,12 +86,14 @@ class GroupController extends GetxController {
           data['message'] ?? 'Group created successfully',
         );
 
-        Get.toNamed(
+        print('Selected contacts: $selectedContacts');
+
+        Get.offNamed(
           '/groupchat_screen',
           arguments: {
             'groupId': createdGroupId,
             'groupName': createdGroupName,
-            'selectedContacts': selectedContacts,
+            'selectedContacts': selectContacts,
           },
         );
       } else {

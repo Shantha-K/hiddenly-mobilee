@@ -5,10 +5,18 @@ import 'package:http/http.dart' as http;
 import 'package:inochat/app/core/cache_service.dart';
 
 class ChatController extends GetxController {
-  var chats = <Map<String, dynamic>>[].obs;
+  var singlechats = <Map<String, dynamic>>[].obs;
+  var groupchats = <Map<String, dynamic>>[].obs;
+
   var isLoading = false.obs;
 
   final String apiUrl = "http://35.154.10.237:5000/api/chats";
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchChats();
+  }
 
   /// Fetch chats from API
   Future<void> fetchChats() async {
@@ -36,8 +44,11 @@ class ChatController extends GetxController {
         String data = await response.stream.bytesToString();
         final parsed = json.decode(data);
 
+        print("Fetched chats: $parsed");
+
         if (parsed["chats"] != null) {
-          chats.value = List<Map<String, dynamic>>.from(parsed["chats"]);
+          singlechats.value = List<Map<String, dynamic>>.from(parsed["chats"]);
+          groupchats.value = List<Map<String, dynamic>>.from(parsed["groups"]);
         }
       } else {
         print("❌ Error: ${response.reasonPhrase}");
@@ -47,11 +58,5 @@ class ChatController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchChats();
   }
 }
