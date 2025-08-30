@@ -17,6 +17,9 @@ class ChatMessage {
     required this.timestamp,
     required this.isMe,
     this.showTimestamp = false,
+    required String chatId,
+    required String content,
+    required String createdAt,
   });
 
   factory ChatMessage.fromJson(Map<String, dynamic> json, String myMobile) {
@@ -28,6 +31,9 @@ class ChatMessage {
       groupId: json["groupId"] ?? "",
       timestamp: DateTime.tryParse(json["createdAt"] ?? "") ?? DateTime.now(),
       isMe: json["sender"]?["mobile"] == myMobile,
+      chatId: '',
+      content: '',
+      createdAt: '',
     );
   }
 }

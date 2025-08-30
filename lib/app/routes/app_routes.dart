@@ -4,11 +4,13 @@ import 'package:inochat/app/bindings/contacts/group_binding.dart';
 import 'package:inochat/app/bindings/contacts/groupchat_binding.dart';
 import 'package:inochat/app/bindings/home_binding.dart';
 import 'package:inochat/app/bindings/search_binding.dart';
+import 'package:inochat/app/bindings/status/mystatus_bindings.dart';
 import 'package:inochat/app/screens/chat/group_screen.dart';
 import 'package:inochat/app/screens/chat/groupchat_screen.dart';
 import 'package:inochat/app/screens/chat/search_screen.dart';
 import 'package:inochat/app/screens/contacts/chat_detail_screen.dart';
 import 'package:inochat/app/screens/home_screen.dart';
+import 'package:inochat/app/screens/status/mystatus_screen.dart';
 
 import '../screens/status/status_screen.dart';
 import '../bindings/status_binding.dart';
@@ -52,6 +54,7 @@ class AppRoutes {
   static const UNLOCK = '/unlock';
   static const GROUP = '/group_screen';
   static const GROUPCHAT = '/groupchat_screen';
+  static const MYSTATUS = '/mystatus_screen';
 
   static final routes = [
     GetPage(name: STATUS, page: () => StatusScreen(), binding: StatusBinding()),
@@ -97,6 +100,11 @@ class AppRoutes {
       name: GROUPCHAT,
       page: () => GroupChatScreen(),
       binding: GroupchatBinding(),
+    ),
+    GetPage(
+      name: MYSTATUS,
+      page: () => MystatusScreen(),
+      binding: MystatusBindings(),
     ),
   ];
 }
