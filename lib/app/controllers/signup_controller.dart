@@ -14,7 +14,7 @@ class SignupController extends GetxController {
   final mobile = ''.obs;
   var isLoading = false.obs;
 
-  Future<void> signUp() async {
+  Future<void> signUp() async { 
     isLoading.value = true;
     var headers = {'Content-Type': 'application/json'};
     var request = http.Request(
